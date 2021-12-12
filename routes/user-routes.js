@@ -27,6 +27,7 @@ const GeneralActions = {
     if (user) {
       res.status(status.client.badRequest).json({
         message: "User Already Exits!",
+        cloudSecurityChecklist: true,
         status: 200,
       });
     } else {
@@ -34,13 +35,14 @@ const GeneralActions = {
       let savedUser = await newUser.save();
       // Send verification email
       ejs.renderFile(
-        path.join(__dirname, "../email-templates/invitation.ejs"),
+        path.join(__dirname, "../email-template/invitation.ejs"),
         {
           email,
           // name: savedUser.firstName,
           link: `${req.get("origin")}/complete-checklist`,
         },
         async function (err, data) {
+          console.log(err);
           if (err) {
             res.status(status.success.created).json({
               message: "Error occured while rendering email",
